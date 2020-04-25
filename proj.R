@@ -76,14 +76,19 @@ final2 = final2[!(final2$education < 0),]
 final2 = final2[!(final2$user_level < 0),]
 final2$city_level = as.numeric(ifelse(final2$city_level == '1', '5', ifelse(final2$city_level == '2', '4', ifelse(final2$city_level == '4',  '2', ifelse(final2$city_level == '5',  '1', '3')))))
 summary(final2)
+exp(0.01)
+exp(-0.03)
 
 plot(final2$city_level, final2$test3)
 head(final2)
 final2$gender = ifelse(final2$gender == 'F', 0, final2$gender == 'M')
 
+final2$logDif = round(log(final2$test3),0)
+summary(final2$test3)
+final2 = final2[(final2$logDif > 0),]
+summary(final2$logDif)
 
-
-poisson_reg = glm(final2$test3 ~ final2$user_level+final2$city_level, data = final2[final2$browsedAndBought=='1',], family = "poisson")
+poisson_reg = lm(final2$logDif ~ final2 ,data = final2[final2$browsedAndBought == 1,])
 summary(poisson_reg)
 plot(poisson_reg)
 pchisq(poisson_reg$deviance, df = poisson_reg$residuals,lower.tail=FALSE)
@@ -110,12 +115,12 @@ final3= final3[(final3$user_level > 0),]
 final3 = final3[(final3$education > 0),]
 summary(final3)
 
-new_reg = lm(final3$percentage ~ final3$city_level+final3$user_level+final3$purchase_power, data = final3[final3$typeDisc == '4',])
+new_reg = lm(final3$percentage ~ final3$city_level+final3$user_level+final3$purchase_power)
 summary(new_reg)
 
 
-ge = hist(final3$total_discount)
-dens = density(final2$test3)
-plot(dens)
-plot(ge)
+#ge = hist(final3$total_discount)
+#dens = density(final2$test3)
+#plot(dens)
+#plot(ge)
 
