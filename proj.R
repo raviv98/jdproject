@@ -47,7 +47,7 @@ f2 = merge(k1, sku, by.x='browsedProduct', by.y='sku_ID')
 f2 = f2[!(f2$attribute1 == '-'),]
 f2 = f2[!(f2$attribute2 == '-'),]
 
-
+write.csv(final3,"C:/Users/Vignesh/Documents/School/Senior Year/2nd Semester/Project/export2.csv",row.names = FALSE)
 
 
 ######## 1st Question: From the initial browse, how long does it take a product to reach a customer? ##########
@@ -59,6 +59,7 @@ nrow(final)
 final = merge(final, u, by.x='user_ID', by.y = 'user_ID')
 final = final[!(final$city_level < 1),]
 summary(final$purchase_power)
+
 
 
 
@@ -76,11 +77,10 @@ final2 = final2[!(final2$education < 0),]
 final2 = final2[!(final2$user_level < 0),]
 final2$city_level = as.numeric(ifelse(final2$city_level == '1', '5', ifelse(final2$city_level == '2', '4', ifelse(final2$city_level == '4',  '2', ifelse(final2$city_level == '5',  '1', '3')))))
 summary(final2)
-exp(0.01)
-exp(-0.03)
 
-plot(final2$city_level, final2$test3)
-head(final2)
+
+#plot(final2$city_level, final2$test3)
+#head(final2)
 final2$gender = ifelse(final2$gender == 'F', 0, final2$gender == 'M')
 
 final2$logDif = round(log(final2$test3),0)
@@ -88,10 +88,10 @@ summary(final2$test3)
 final2 = final2[(final2$logDif > 0),]
 summary(final2$logDif)
 
-poisson_reg = lm(final2$logDif ~ final2 ,data = final2[final2$browsedAndBought == 1,])
+poisson_reg = lm(final2$logDif ~ final2$city_level+final2$user_level ,data = final2[final2$browsedAndBought == 1,])
 summary(poisson_reg)
-plot(poisson_reg)
-pchisq(poisson_reg$deviance, df = poisson_reg$residuals,lower.tail=FALSE)
+
+#plot(final2$city_level,final2$test3, main = "Distribution of Travel Time", xlab = "City Level", ylab = "Delivery Time (Hours)")
 
 
 ############### 2nd Question: What factors impact the discount percentage offered to individuals? ############
